@@ -20,14 +20,28 @@ class NewVisitorTest(unittest.TestCase):
 
         # he notices the page title and header mention Superlists
         self.assertIn('Superlists', self.browser.title)
-        self.fail('Finish the test!')
+        header_text = self.browser.find_element_by_tag_name('h1').text
+        self.assertIn('Superlists', header_text)
 
         # he is able to enter a to-do item immediately
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        self.assertEqual(
+            inputbox.get_attribute('placeholder'),
+            'Enter a To-do'
+        )
 
         # he types "Buy Lego Fairground Mixer" into a text box
+        inputbox.send_keys('Buy Lego Fairground Mixer')
 
         # When he hits enter, the page updates, and now the page lists
         # "1: Buy Lego Fairground Mixer" as a to-do
+        inputbox.send_keys(Keys.ENTER)
+
+        table = self.browser.find_element_by_id('id_list_table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertTrue(
+            any(row.text == '1: Buy Lego Fairground Mixer' for row in rows)
+        )
 
         # There is still a text box to input another item
         # He enters "Build Lego Fairground Mixer"
@@ -39,6 +53,8 @@ class NewVisitorTest(unittest.TestCase):
         # He visits that URL and sees the to-do list is still there
 
         # He closes the browser
+
+        self.fail('Finish the test!')
 
 if __name__ == '__main__':
     unittest.main()

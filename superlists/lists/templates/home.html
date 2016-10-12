@@ -6,9 +6,15 @@
 </head>
 <body>
     <h1>Superlists</h1>
-    <input type="text" name="" id="id_new_item" placeholder="Enter a To-do">
-    <table id="id_list_table">
+    <form method="POST">
+        {% csrf_token %}
+        <input type="text" name="item_text" id="id_new_item" placeholder="Enter a To-do">
+    </form>
 
+    <table id="id_list_table">
+        <tr>
+            <td>1: {{ new_item_text }}</td>
+        </tr>
     </table>
 </body>
 </html>

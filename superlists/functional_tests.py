@@ -1,7 +1,8 @@
+import unittest
+
 from selenium import webdriver
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.common.keys import Keys
-import unittest
 
 
 class NewVisitorTest(unittest.TestCase):
@@ -40,13 +41,17 @@ class NewVisitorTest(unittest.TestCase):
 
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
-        self.assertTrue(
-            any(row.text == '1: Buy Lego Fairground Mixer' for row in rows),
-            "New to-do item did not appear in table"
-        )
+        self.assertIn('1: Buy Lego Fairground Mixer', [row.text for row in rows])
 
         # There is still a text box to input another item
         # He enters "Build Lego Fairground Mixer"
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox.send_keys('Build Lego Fairground Mixer')
+        inputbox.send_keys(Keys.ENTER)
+        table = self.browser.find_element_by_id('id_list_table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertIn('1: Buy Lego Fairground Mixer', [row.text for row in rows])
+        self.assertIn('2: Build Lego Fairground Mixer', [row.text for row in rows])
 
         # The page updates again, and shows both to-dos
 

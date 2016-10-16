@@ -32,7 +32,7 @@ class NewVisitorTest(LiveServerTestCase):
         # he notices the page title and header mention Superlists
         self.assertIn('Superlists', self.browser.title)
         header_text = self.browser.find_element_by_tag_name('h1').text
-        self.assertIn('Superlists', header_text)
+        self.assertIn('Start a new To-Do list', header_text)
 
         # he is able to enter a to-do item immediately
         inputbox = self.browser.find_element_by_id('id_new_item')
@@ -78,7 +78,7 @@ class NewVisitorTest(LiveServerTestCase):
         # Rach creates a new list item
         inputbox = self.browser.find_element_by_id('id_new_item')
         inputbox.send_keys('Buy milk')
-        inputbox.send_keys(Keys.Enter)
+        inputbox.send_keys(Keys.ENTER)
 
         # Rach gets her own unique URL
         rach_list_url = self.browser.current_url

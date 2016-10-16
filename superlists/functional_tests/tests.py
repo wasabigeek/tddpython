@@ -6,10 +6,12 @@ from selenium.webdriver.common.keys import Keys
 
 
 class NewVisitorTest(LiveServerTestCase):
+    # using git bash on windows
+    firefox_path = 'C:/Program Files (x86)/Mozilla Firefox/firefox.exe'
+
     def setUp(self):
         self.browser = webdriver.Firefox(firefox_binary=FirefoxBinary(
-            # using git bash on windows 
-            firefox_path='C:/Program Files (x86)/Mozilla Firefox/firefox.exe'
+            firefox_path=self.firefox_path
         ))
         self.browser.implicitly_wait(3)
 
@@ -42,12 +44,11 @@ class NewVisitorTest(LiveServerTestCase):
         # he types "Buy Lego Fairground Mixer" into a text box
         inputbox.send_keys('Buy Lego Fairground Mixer')
 
-        # When he hits enter, the page updates, and now the page lists
-        # "1: Buy Lego Fairground Mixer" as a to-do
+        # When he hits enter, he is taken to a new URL,
+        # and now the page lists "1: Buy Lego Fairground Mixer" as a to-do
         inputbox.send_keys(Keys.ENTER)
-
-        table = self.browser.find_element_by_id('id_list_table')
-        rows = table.find_elements_by_tag_name('tr')
+        wasabi_list_url = self.browser.current_url
+        self.assertRegex(wasabi_list_url, '/lists/.+')
         self.check_for_row_in_list_table('1: Buy Lego Fairground Mixer')
 
         # There is still a text box to input another item
@@ -60,10 +61,34 @@ class NewVisitorTest(LiveServerTestCase):
         self.check_for_row_in_list_table('1: Buy Lego Fairground Mixer')
         self.check_for_row_in_list_table('2: Build Lego Fairground Mixer')
 
-        # Wasabi checks the page URL
+        # Now a new user, Rach, comes along to the site.
 
-        # He visits that URL and sees the to-do list is still there
+        ## We use a new browser session to make sure no information
+        ## of Wasabi's is coming though from cookies etc.
+        self.browser.quit()
+        self.browser = webdriver.Firefox(firefox_binary=FirefoxBinary(
+            firefox_path=self.firefox_path
+        ))
 
-        # He closes the browser
+        # Rach visits the home page. Wasabi's list is not there
+        self.browser.get(self.live_server_url)
+        page_text = self.browser.find_element_by_tag_name('body').text
+        self.assertNotIn('Buy Lego Fairground Mixer', page_text)
 
+        # Rach creates a new list item
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox.send_keys('Buy milk')
+        inputbox.send_keys(Keys.Enter)
+
+        # Rach gets her own unique URL
+        rach_list_url = self.browser.current_url
+        self.assertRegex(rach_list_url, '/lists/.+')
+        self.assertNotEqual(rach_list_url, wasabi_list_url)
+
+        # Again, there is no trace of wasabi's list
+        page_text = self.browser.find_element_by_tag_name('body').text
+        self.assertNotIn('Buy Lego Fairground Mixer', page_text)
+        self.assertIn('Buy milk', page_text)
+
+        # Satisfied, they both go to sleep
         self.fail('Finish the test!')

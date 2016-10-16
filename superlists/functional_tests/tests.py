@@ -1,11 +1,11 @@
-import unittest
+from django.test import LiveServerTestCase
 
 from selenium import webdriver
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.common.keys import Keys
 
 
-class NewVisitorTest(unittest.TestCase):
+class NewVisitorTest(LiveServerTestCase):
     def setUp(self):
         self.browser = webdriver.Firefox(firefox_binary=FirefoxBinary(
             # using git bash on windows 
@@ -25,7 +25,7 @@ class NewVisitorTest(unittest.TestCase):
 
     def test_can_start_a_list_and_retrieve_later(self):
         # wasabi opens superlists in his browser
-        self.browser.get('http://localhost:8000')
+        self.browser.get(self.live_server_url)
 
         # he notices the page title and header mention Superlists
         self.assertIn('Superlists', self.browser.title)
@@ -67,6 +67,3 @@ class NewVisitorTest(unittest.TestCase):
         # He closes the browser
 
         self.fail('Finish the test!')
-
-if __name__ == '__main__':
-    unittest.main()

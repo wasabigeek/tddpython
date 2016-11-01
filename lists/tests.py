@@ -53,6 +53,7 @@ class ListViewTest(TestCase):
 
         self.assertTemplateUsed(response, 'list.html')
 
+
     def test_displays_only_items_for_that_list(self):
         correct_list = List.objects.create()
         Item.objects.create(text='itemey 1', list=correct_list)

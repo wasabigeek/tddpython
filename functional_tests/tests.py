@@ -21,12 +21,6 @@ class NewVisitorTest(StaticLiveServerTestCase):
         cls.server_url = cls.live_server_url
 
 
-    # @classmethod
-    # def tearDownClass(cls):
-    #     if cls.server_url == cls.live_server_url:
-    #        super().tearDownClass()
-
-
     def setUp(self):
         self.browser = webdriver.Firefox(firefox_binary=FirefoxBinary(
             firefox_path=self.firefox_path
@@ -57,7 +51,7 @@ class NewVisitorTest(StaticLiveServerTestCase):
         )
 
 
-    def test_can_start_a_list_and_retrieve_later(self):
+    def test_can_start_a_list_for_one_user(self):
         # wasabi opens superlists in his browser
         self.browser.get(self.server_url)
 
@@ -79,8 +73,6 @@ class NewVisitorTest(StaticLiveServerTestCase):
         # When he hits enter, he is taken to a new URL,
         # and now the page lists "1: Buy Lego Fairground Mixer" as a to-do
         inputbox.send_keys(Keys.ENTER)
-        wasabi_list_url = self.browser.current_url
-        self.assertRegex(wasabi_list_url, '/lists/.+')
         self.check_for_row_in_list_table('1: Buy Lego Fairground Mixer')
 
         # There is still a text box to input another item
@@ -93,7 +85,18 @@ class NewVisitorTest(StaticLiveServerTestCase):
         self.check_for_row_in_list_table('1: Buy Lego Fairground Mixer')
         self.check_for_row_in_list_table('2: Build Lego Fairground Mixer')
 
-        # Now a new user, Rach, comes along to the site.
+
+    def test_multiple_users_can_start_lists_at_different_urls(self):
+        # wasabi starts a new to-do list
+        self.browser.get(self.server_url)
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox.send_keys('Buy Lego Fairground Mixer')
+        inputbox.send_keys(Keys.ENTER)
+        self.check_for_row_in_list_table('1: Buy Lego Fairground Mixer')
+
+        # he notices his list has a unique URL
+        wasabi_list_url = self.browser.current_url
+        self.assertRegex(wasabi_list_url, '/lists/.+')
 
         ## We use a new browser session to make sure no information
         ## of Wasabi's is coming though from cookies etc.
@@ -102,15 +105,17 @@ class NewVisitorTest(StaticLiveServerTestCase):
             firefox_path=self.firefox_path
         ))
 
-        # Rach visits the home page. Wasabi's list is not there
+        # Now a new user, Rach, visits the home page. Wasabi's list is not there
         self.browser.get(self.server_url)
         page_text = self.browser.find_element_by_tag_name('body').text
         self.assertNotIn('Buy Lego Fairground Mixer', page_text)
+        self.assertNotIn('Build Lego Fairground Mixer', page_text)
 
         # Rach creates a new list item
         inputbox = self.browser.find_element_by_id('id_new_item')
         inputbox.send_keys('Buy milk')
         inputbox.send_keys(Keys.ENTER)
+        self.check_for_row_in_list_table('1: Buy milk')
 
         # Rach gets her own unique URL
         rach_list_url = self.browser.current_url

@@ -6,8 +6,6 @@ from selenium.webdriver.common.keys import Keys
 
 
 class NewVisitorTest(FunctionalTest):
-
-
     def test_can_start_a_list_for_one_user(self):
         # wasabi opens superlists in his browser
         self.browser.get(self.server_url)
@@ -18,7 +16,7 @@ class NewVisitorTest(FunctionalTest):
         self.assertIn('Start a new To-Do list', header_text)
 
         # he is able to enter a to-do item immediately
-        inputbox = self.browser.find_element_by_id('id_text')
+        inputbox = self.get_item_input_box()
         self.assertEqual(
             inputbox.get_attribute('placeholder'),
             'Enter a to-do item'

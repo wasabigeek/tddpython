@@ -18,10 +18,10 @@ class NewVisitorTest(FunctionalTest):
         self.assertIn('Start a new To-Do list', header_text)
 
         # he is able to enter a to-do item immediately
-        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox = self.browser.find_element_by_id('id_text')
         self.assertEqual(
             inputbox.get_attribute('placeholder'),
-            'Enter a To-do'
+            'Enter a to-do item'
         )
 
         # he types "Buy Lego Fairground Mixer" into a text box
@@ -34,7 +34,7 @@ class NewVisitorTest(FunctionalTest):
 
         # There is still a text box to input another item
         # He enters "Build Lego Fairground Mixer"
-        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox = self.get_item_input_box()
         inputbox.send_keys('Build Lego Fairground Mixer')
         inputbox.send_keys(Keys.ENTER)
 
@@ -46,7 +46,7 @@ class NewVisitorTest(FunctionalTest):
     def test_multiple_users_can_start_lists_at_different_urls(self):
         # wasabi starts a new to-do list
         self.browser.get(self.server_url)
-        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox = self.get_item_input_box()
         inputbox.send_keys('Buy Lego Fairground Mixer')
         inputbox.send_keys(Keys.ENTER)
         self.check_for_row_in_list_table('1: Buy Lego Fairground Mixer')
@@ -69,7 +69,7 @@ class NewVisitorTest(FunctionalTest):
         self.assertNotIn('Build Lego Fairground Mixer', page_text)
 
         # Rach creates a new list item
-        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox = self.get_item_input_box()
         inputbox.send_keys('Buy milk')
         inputbox.send_keys(Keys.ENTER)
         self.check_for_row_in_list_table('1: Buy milk')

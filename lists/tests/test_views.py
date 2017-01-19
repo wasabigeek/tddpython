@@ -6,6 +6,8 @@ from django.utils.html import escape
 
 from lists.views import home_page
 from lists.models import Item, List
+from lists.forms import ItemForm
+
 
 # Create your tests here.
 class HomePageTest(TestCase):
@@ -19,6 +21,11 @@ class HomePageTest(TestCase):
         response = home_page(request)
         expected_html = render_to_string('home.html')
         self.assertTrue(response.content.decode(), expected_html)
+
+
+    def test_home_page_uses_item_form(self):
+        response = self.client.get('/')
+        self.assertIsInstance(response.context['form'], ItemForm)
 
 
 class ListViewTest(TestCase):
@@ -96,7 +103,6 @@ class NewListTest(TestCase):
         self.client.post('/lists/new', data={'item_text': ''})
         self.assertEqual(List.objects.count(), 0)
         self.assertEqual(Item.objects.count(), 0)
-
 
 
 class NewItemTest(TestCase):

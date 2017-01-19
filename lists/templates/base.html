@@ -15,11 +15,8 @@
                 <div class="text-center">
                     <h1>{% block header_text %}{% endblock %}</h1>
                     <form method="POST" action="{% block form_action %}{% endblock %}">
+                        {{ form.text }}
                         {% csrf_token %}
-                        <input type="text" name="item_text" id="id_new_item"
-                            class="form-control input-lg"
-                            placeholder="Enter a To-do"
-                         >
                          {% if error %}
                             <div class="form-group has-error">
                                 <span class="help-block">{{error}}</span>

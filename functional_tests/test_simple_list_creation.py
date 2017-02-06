@@ -28,7 +28,7 @@ class NewVisitorTest(FunctionalTest):
         # When he hits enter, he is taken to a new URL,
         # and now the page lists "1: Buy Lego Fairground Mixer" as a to-do
         inputbox.send_keys(Keys.ENTER)
-        self.check_for_row_in_list_table('1: Buy Lego Fairground Mixer')
+        self.wait_for_row_in_list_table('1: Buy Lego Fairground Mixer')
 
         # There is still a text box to input another item
         # He enters "Build Lego Fairground Mixer"
@@ -37,8 +37,8 @@ class NewVisitorTest(FunctionalTest):
         inputbox.send_keys(Keys.ENTER)
 
         # The page updates again, and shows both to-dos
-        self.check_for_row_in_list_table('1: Buy Lego Fairground Mixer')
-        self.check_for_row_in_list_table('2: Build Lego Fairground Mixer')
+        self.wait_for_row_in_list_table('1: Buy Lego Fairground Mixer')
+        self.wait_for_row_in_list_table('2: Build Lego Fairground Mixer')
 
 
     def test_multiple_users_can_start_lists_at_different_urls(self):
@@ -47,7 +47,7 @@ class NewVisitorTest(FunctionalTest):
         inputbox = self.get_item_input_box()
         inputbox.send_keys('Buy Lego Fairground Mixer')
         inputbox.send_keys(Keys.ENTER)
-        self.check_for_row_in_list_table('1: Buy Lego Fairground Mixer')
+        self.wait_for_row_in_list_table('1: Buy Lego Fairground Mixer')
 
         # he notices his list has a unique URL
         wasabi_list_url = self.browser.current_url
@@ -70,7 +70,7 @@ class NewVisitorTest(FunctionalTest):
         inputbox = self.get_item_input_box()
         inputbox.send_keys('Buy milk')
         inputbox.send_keys(Keys.ENTER)
-        self.check_for_row_in_list_table('1: Buy milk')
+        self.wait_for_row_in_list_table('1: Buy milk')
 
         # Rach gets her own unique URL
         rach_list_url = self.browser.current_url

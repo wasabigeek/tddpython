@@ -8,7 +8,7 @@ from selenium.webdriver.common.keys import Keys
 class NewVisitorTest(FunctionalTest):
     def test_can_start_a_list_for_one_user(self):
         # wasabi opens superlists in his browser
-        self.browser.get(self.server_url)
+        self.browser.get(self.live_server_url)
 
         # he notices the page title and header mention Superlists
         self.assertIn('Superlists', self.browser.title)
@@ -40,10 +40,9 @@ class NewVisitorTest(FunctionalTest):
         self.wait_for_row_in_list_table('1: Buy Lego Fairground Mixer')
         self.wait_for_row_in_list_table('2: Build Lego Fairground Mixer')
 
-
     def test_multiple_users_can_start_lists_at_different_urls(self):
         # wasabi starts a new to-do list
-        self.browser.get(self.server_url)
+        self.browser.get(self.live_server_url)
         inputbox = self.get_item_input_box()
         inputbox.send_keys('Buy Lego Fairground Mixer')
         inputbox.send_keys(Keys.ENTER)
@@ -53,15 +52,13 @@ class NewVisitorTest(FunctionalTest):
         wasabi_list_url = self.browser.current_url
         self.assertRegex(wasabi_list_url, '/lists/.+')
 
-        ## We use a new browser session to make sure no information
-        ## of Wasabi's is coming though from cookies etc.
+        # We use a new browser session to make sure no information
+        # of Wasabi's is coming though from cookies etc.
         self.browser.quit()
-        self.browser = webdriver.Firefox(firefox_binary=FirefoxBinary(
-            firefox_path=self.firefox_path
-        ))
+        self.browser = webdriver.Firefox()
 
         # Now a new user, Rach, visits the home page. Wasabi's list is not there
-        self.browser.get(self.server_url)
+        self.browser.get(self.live_server_url)
         page_text = self.browser.find_element_by_tag_name('body').text
         self.assertNotIn('Buy Lego Fairground Mixer', page_text)
         self.assertNotIn('Build Lego Fairground Mixer', page_text)

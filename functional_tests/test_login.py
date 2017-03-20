@@ -14,7 +14,7 @@ class LoginTest(FunctionalTest):
 
     def test_can_get_email_link_to_log_in(self):
         # User goes to the superlists site and enters her email address
-        self.browser.get(self.server_url)
+        self.browser.get(self.live_server_url)
         self.browser.find_element_by_name('email').send_keys(TEST_EMAIL)
         self.browser.find_element_by_name('email').send_keys(Keys.ENTER)
 
@@ -37,7 +37,7 @@ class LoginTest(FunctionalTest):
                 'Could not find url in email body\n{}'.format(email.body)
             )
         url = url_search.group(0)
-        self.assertIn(self.server_url, url)
+        self.assertIn(self.live_server_url, url)
 
         # She clicks it
         self.browser.get(url)

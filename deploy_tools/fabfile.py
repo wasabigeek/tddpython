@@ -4,8 +4,12 @@ import random
 
 REPO_URL = 'https://github.com/wasabigeek/tddpython.git'
 
+
 def deploy():
-    site_folder = '/home/%s/sites/%s' % (env.user, env.host)
+    site_folder = '/home/{env_user}/sites/{env_host}'.format(
+        env_user=env.user,
+        env_host=env.host
+    )
     source_folder = site_folder + '/source'
     _create_directory_structure_if_necessary(site_folder)
     _get_latest_source(source_folder)
@@ -32,9 +36,10 @@ def _get_latest_source(source_folder):
 def _update_settings(source_folder, site_name):
     settings_path = source_folder + '/superlists/settings.py'
     sed(settings_path, "DEBUG = True", 'DEBUG = False')
-    sed(settings_path,
+    sed(
+        settings_path,
         'ALLOWED_HOSTS =.+$',
-        'ALLOWED_HOSTS = ["%s"]' % (site_name, )
+        'ALLOWED_HOSTS = ["{site_name}"]'.format(site_name=site_name)
     )
     secret_key_file = source_folder + '/superlists/secret_key.py'
     if not exists(secret_key_file):

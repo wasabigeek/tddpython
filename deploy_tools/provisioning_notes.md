@@ -17,11 +17,13 @@ e.g.,, on Ubuntu:
 
 * see nginx.template.conf
 * replace SITENAME with, e.g., staging.my-domain.com
+* replace USER
 
 ## Systemd service
 
 * see gunicorn-systemd.template.service
 * replace SITENAME with, e.g., staging.my-domain.com
+* replace USER
 
 ## Folder structure:
 Assume we have a user account at /home/username

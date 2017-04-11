@@ -14,9 +14,12 @@
             <div class="container-fluid">
                 <a class="navbar-brand" href="/">Superlists</a>
                 {% if user.email %}
+                    <ul class="nav navbar-nav navbar-left">
+                        <li><a href="{% url 'my_lists' user.email %}">My lists</a></li>
+                    </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li class="navbar-test">Logged in as {{user.email}}</li>
-                        <li><a href="{% url 'logout' %}">Log out</li>
+                        <li><a href="{% url 'logout' %}">Log out</a></li>
                     </ul>
                 {% else %}
                     <form class="navbar-form navbar-right" method="POST" action="{% url 'send_login_email' %}">
@@ -46,15 +49,17 @@
             <div class="col-md-6 col-md-offset-3 jumbotron">
                 <div class="text-center">
                     <h1>{% block header_text %}{% endblock %}</h1>
-                    <form method="POST" action="{% block form_action %}{% endblock %}">
-                        {{ form.text }}
-                        {% csrf_token %}
-                        {% if form.errors %}
-                            <div class="form-group has-error">
-                                <span class="help-block">{{form.text.errors}}</span>
-                            </div>
-                        {% endif %}
-                    </form>
+                    {% block list_form %}
+                        <form method="POST" action="{% block form_action %}{% endblock %}">
+                            {{ form.text }}
+                            {% csrf_token %}
+                            {% if form.errors %}
+                                <div class="form-group has-error">
+                                    <span class="help-block">{{form.text.errors}}</span>
+                                </div>
+                            {% endif %}
+                        </form>
+                    {% endblock list_form %}
                 </div>
             </div>
         </div>
@@ -62,7 +67,14 @@
         <div class="row">
             <div class="col-md-6 col-md-offset-3">
             {% block table %}
-            {% endblock %}
+            {% endblock table %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+            {% block extra_content %}
+            {% endblock extra_content %}
             </div>
         </div>
     </div>

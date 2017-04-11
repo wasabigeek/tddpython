@@ -1,7 +1,6 @@
 from .base import FunctionalTest
 
 from selenium import webdriver
-from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.common.keys import Keys
 
 
@@ -55,7 +54,7 @@ class NewVisitorTest(FunctionalTest):
         # We use a new browser session to make sure no information
         # of Wasabi's is coming though from cookies etc.
         self.browser.quit()
-        self.browser = webdriver.Firefox()
+        self.browser = webdriver.Chrome()
 
         # Now a new user, Rach, visits the home page. Wasabi's list is not there
         self.browser.get(self.live_server_url)

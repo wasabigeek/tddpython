@@ -24,6 +24,15 @@ def view_list(request, list_id):
     return render(request, 'list.html', {'list': list_, 'form': form})
 
 
+def share_list(request, list_id):
+    list_ = List.objects.get(id=list_id)
+
+    if request.method == 'POST':
+        list_.shared_with.add(request.POST['sharee'])
+
+    return redirect(list_)
+
+
 def new_list(request):
     form = NewListForm(data=request.POST)
     if form.is_valid():

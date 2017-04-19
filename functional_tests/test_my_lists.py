@@ -1,4 +1,6 @@
 from .base import FunctionalTest
+from .list_page import ListPage
+from .my_lists_page import MyListsPage
 
 
 class MyListsTest(FunctionalTest):
@@ -11,12 +13,13 @@ class MyListsTest(FunctionalTest):
 
         # User goes to home page and starts a list
         self.browser.get(self.live_server_url)
-        self.add_list_item('Reticulate splines')
-        self.add_list_item('Immanentize eschaton')
+        list_page = ListPage(self)
+        list_page.add_list_item('Reticulate splines')
+        list_page.add_list_item('Immanentize eschaton')
         first_list_url = self.browser.current_url
 
         # she notices a "My Lists" link, for the first time
-        self.browser.find_element_by_link_text('My lists').click()
+        my_lists_page = MyListsPage(self).go_to_my_lists_page()
 
         # she sees her list is in there, named according to it's first list item
         self.wait_for(lambda: self.browser.find_element_by_link_text('Reticulate splines'))
@@ -25,11 +28,11 @@ class MyListsTest(FunctionalTest):
 
         # She decides to start another list, just to see
         self.browser.get(self.live_server_url)
-        self.add_list_item('Click cows')
+        list_page.add_list_item('Click cows')
         second_list_url = self.browser.current_url
 
         # Under 'my lists', her new list appears
-        self.browser.find_element_by_link_text('My lists').click()
+        my_lists_page.go_to_my_lists_page()
         self.wait_for(lambda: self.browser.find_element_by_link_text('Click cows'))
         self.browser.find_element_by_link_text('Click cows').click()
         self.wait_for(lambda: self.assertEqual(self.browser.current_url, second_list_url))
